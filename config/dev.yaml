@@ -1,7 +1,0 @@
-AWSAccountID: "914898555282"
-AWSProfileName: "filetransfer"
-AWSProfileRegion: "eu-central-1"
-
-App: "s3antivirus"
-Environment: "dev"
-Version: "0.0.1"
