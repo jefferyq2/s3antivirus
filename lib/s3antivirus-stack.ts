@@ -10,11 +10,16 @@ export class S3AntivirusStack extends cdk.Stack {
       cidr: "192.168.0.0/24",
       subnetConfiguration: [
         {
-          cidrMask: 26,
-          name: 'application',
+          cidrMask: 27,
+          name: 'subnet',
           subnetType: ec2.SubnetType.ISOLATED
         }
       ]
+    });
+
+    const vpcep = new ec2.GatewayVpcEndpoint(this, 'AvVPCEp',{
+      service: ec2.GatewayVpcEndpointAwsService.S3,
+      vpc: vpc
     });
   }
 }
