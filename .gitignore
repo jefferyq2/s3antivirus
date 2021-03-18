@@ -1,6 +1,6 @@
 #Custom
 config/*
-!config/dev.yaml
+!config/dev-demo.yaml
 
 
 *.js

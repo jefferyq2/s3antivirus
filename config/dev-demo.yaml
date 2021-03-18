@@ -1,0 +1,7 @@
+AWSAccountID: "123456789"
+AWSProfileName: "devProfile"
+AWSProfileRegion: "eu-central-1"
+
+App: "s3antivirus"
+Environment: "dev-demo"
+Version: "0.0.1"

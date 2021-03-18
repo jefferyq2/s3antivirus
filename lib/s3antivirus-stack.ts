@@ -10,7 +10,7 @@ export class S3AntivirusStack extends cdk.Stack {
       cidr: "192.168.0.0/24",
       subnetConfiguration: [
         {
-          cidrMask: 25,
+          cidrMask: 26,
           name: 'application',
           subnetType: ec2.SubnetType.ISOLATED
         }
