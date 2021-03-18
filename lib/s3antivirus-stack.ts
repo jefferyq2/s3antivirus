@@ -1,6 +1,10 @@
 import * as cdk from '@aws-cdk/core';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as efs from '@aws-cdk/aws-efs';
+import * as lambda from '@aws-cdk/aws-lambda';
+import * as path from 'path';
+import { Duration } from '@aws-cdk/core';
+import { avConfig } from './av-config';
 
 export class S3AntivirusStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -36,13 +40,24 @@ export class S3AntivirusStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-    fileSystem.addAccessPoint('AvEfsAp',{
-      path: '/lambda',
+    const efsAp = fileSystem.addAccessPoint('AvEfsAp',{
+      path: avConfig.workdir,
       createAcl: {
         ownerGid: "1000",
         ownerUid: "1000",
         permissions: "0777"
       }
+    });
+
+    // Lambda function that downloads definition files
+    const fn = new lambda.Function(this, 'AvLmbdDl', {
+      runtime: lambda.Runtime.NODEJS_14_X,
+      handler: 'download-definitions.lambdaHandleEvent',
+      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda')),
+      vpc:vpc,
+      filesystem: lambda.FileSystem.fromEfsAccessPoint(efsAp, avConfig.mountpoint ),
+      memorySize: 1024,
+      timeout: Duration.minutes(1)
     });
 
   }

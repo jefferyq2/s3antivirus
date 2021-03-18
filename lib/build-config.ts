@@ -1,4 +1,3 @@
-  
 export interface BuildConfig
 {
     readonly AWSAccountID : string;
