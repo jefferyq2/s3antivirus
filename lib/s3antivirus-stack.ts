@@ -3,6 +3,8 @@ import * as ec2 from '@aws-cdk/aws-ec2';
 import * as efs from '@aws-cdk/aws-efs';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as lambda from '@aws-cdk/aws-lambda';
+import * as event from '@aws-cdk/aws-events';
+import * as targets from '@aws-cdk/aws-events-targets';
 import * as path from 'path';
 import { avConfig } from './av-config';
 
@@ -30,7 +32,24 @@ export class S3AntivirusStack extends cdk.Stack {
       }
     });
 
+    // grant lambda permission to the S3 bucket
     s3avdev.grantReadWrite(fnDefDl);
+
+    // add a trigger schedule
+    const schdDefDl = new event.Rule(this, 'definitionsDownloadRule',{
+      description: 'triggers a Lambda function to download the Antivirus definition files',
+      schedule: event.Schedule.rate(cdk.Duration.hours(3)),
+      targets:[
+        new targets.LambdaFunction(fnDefDl)
+      ]
+    });
+/*     eventPattern: {
+      source: ['aws.s3'],
+      resources:[s3avdev.bucketArn],
+      detail: {
+        'eventName': ['PutObject']
+      }
+    } */
     //#endregion
 
 
