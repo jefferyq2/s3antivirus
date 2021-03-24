@@ -66,7 +66,7 @@ export class S3AntivirusStack extends cdk.Stack {
         PATH_TO_AV_DEFINITIONS: 'avdefinitions'
       }
     });
-    s3avdev.grantRead(fnMvDev); 
+    s3avdev.grantRead(fnMvDev);
     // #endregion
 
     // create network Resources
