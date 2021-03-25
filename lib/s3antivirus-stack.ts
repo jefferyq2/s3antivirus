@@ -69,7 +69,7 @@ export class S3AntivirusStack extends cdk.Stack {
     }); */
 
     // security groups
-    const sg = new ec2.SecurityGroup(this, 'AvVPCSg',{
+    const sg = new ec2.SecurityGroup(this, 'AvVPCSg', {
       vpc: vpc
     });
 
@@ -88,7 +88,7 @@ export class S3AntivirusStack extends cdk.Stack {
 
     // EFS - Accesspoint
     const efsAp = fileSystem.addAccessPoint('AvEfsAp', {
-      path: avConfig.workdir,
+      path: avConfig.efsPath,
       createAcl: {
         ownerGid: '1000',
         ownerUid: '1000',
@@ -99,7 +99,6 @@ export class S3AntivirusStack extends cdk.Stack {
         uid: '1000'
       }
     });
-
 
     // #region - Move AV definitions from S3 to EFS
     // Lambda function

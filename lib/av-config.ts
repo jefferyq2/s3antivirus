@@ -1,7 +1,7 @@
 const avConfig = {
-  workdir: '/lambda',
+  efsPath: '/lambda',
   mountpoint: '/mnt/lambda',
   avDefS3KeyPrefix: 'avdefinitions'
 };
 
-export {avConfig};
+export { avConfig };
