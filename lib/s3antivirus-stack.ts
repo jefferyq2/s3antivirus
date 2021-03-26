@@ -81,7 +81,7 @@ export class S3AntivirusStack extends cdk.Stack {
       filesystem: lambda.FileSystem.fromEfsAccessPoint(efsAp, avConfig.mountpoint)
     });
     // grant read permissions to get the definition files
-    s3avdev.grantRead(fnMvDev);
+    s3avdev.grantReadWrite(fnMvDev);
     // #endregion
 
     // #region - Download AV definitions from the web
@@ -110,6 +110,21 @@ export class S3AntivirusStack extends cdk.Stack {
       targets: [
         new targets.LambdaFunction(fnDefDl)
       ]
+    });
+    // #endregion
+  
+    // #region - Antivirus scanner
+    const fnAvScn = new lambda.Function(this, 'AntivirusScan', {
+      runtime: lambda.Runtime.NODEJS_14_X,
+      handler: 'antivirus.lambdaHandleEvent',
+      code: lambda.Code.fromAsset(path.join(__dirname, 'lambda', 'clamav')),
+      memorySize: 4096, // TODO - Loadtesting
+      timeout: cdk.Duration.minutes(5),
+      environment: {
+        CLAMAV_BUCKET_NAME: s3avdev.bucketName,
+        PATH_TO_AV_DEFINITIONS: avConfig.avDefS3KeyPrefix,
+        MAX_FILE_SIZE: (2 ** 31).toString()
+      }
     });
     // #endregion
   }
