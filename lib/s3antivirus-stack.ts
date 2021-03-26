@@ -19,7 +19,7 @@ export class S3AntivirusStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-    // create network Resources
+    // #region - Network resources
     const vpc = new ec2.Vpc(this, 'AvVPC', {
       cidr: '192.168.0.0/24',
       subnetConfiguration: [
@@ -30,10 +30,6 @@ export class S3AntivirusStack extends cdk.Stack {
         }
       ]
     });
-
-/*     const vpc = ec2.Vpc.fromLookup(this, 'defaultVPC',{
-      isDefault: true
-    }); */
 
     // security groups
     const sg = new ec2.SecurityGroup(this, 'AvVPCSg', {
@@ -66,6 +62,7 @@ export class S3AntivirusStack extends cdk.Stack {
         uid: '1000'
       }
     });
+    // #endregion
 
     // #region - Move AV definitions from S3 to EFS
     // Lambda function
@@ -85,23 +82,6 @@ export class S3AntivirusStack extends cdk.Stack {
     });
     // grant read permissions to get the definition files
     s3avdev.grantRead(fnMvDev);
-
-    // trigger to move AV definitions to EFS
-/*     const ebRuleMvDevToEfs = new event.Rule(this, 'moveDefinitionsToEfsRule', {
-      description: 'triggers a Lambda to move the Defintions from S3 to EFS',
-      eventPattern: {
-        source: ['aws.lambda'],
-        detail: {
-          eventName: ['Invoke'],
-          resources: [
-            {
-              ARN: fnDefDl.functionArn
-            }
-          ]
-        }
-      }
-    }); */
-
     // #endregion
 
     // #region - Download AV definitions from the web
@@ -126,19 +106,11 @@ export class S3AntivirusStack extends cdk.Stack {
     // add a trigger schedule
     const ebRuleDefDl = new event.Rule(this, 'definitionsDownloadRule', {
       description: 'triggers a Lambda function to download the Antivirus definition files',
-      schedule: event.Schedule.rate(cdk.Duration.hours(3)),
+      schedule: event.Schedule.rate(cdk.Duration.hours(0.5)), // TODO - replace download intervall with 3h
       targets: [
         new targets.LambdaFunction(fnDefDl)
       ]
     });
-/*     eventPattern: {
-      source: ['aws.s3'],
-      resources:[s3avdev.bucketArn],
-      detail: {
-        'eventName': ['PutObject']
-      }
-    } */
     // #endregion
-
   }
 }
