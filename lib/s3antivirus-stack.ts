@@ -1,4 +1,5 @@
 import * as cdk from '@aws-cdk/core';
+import * as iam from '@aws-cdk/aws-iam';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as efs from '@aws-cdk/aws-efs';
 import * as s3 from '@aws-cdk/aws-s3';
@@ -112,7 +113,7 @@ export class S3AntivirusStack extends cdk.Stack {
       ]
     });
     // #endregion
-  
+
     // #region - Antivirus scanner
     const fnAvScn = new lambda.Function(this, 'AntivirusScan', {
       runtime: lambda.Runtime.NODEJS_14_X,
@@ -124,8 +125,15 @@ export class S3AntivirusStack extends cdk.Stack {
         CLAMAV_BUCKET_NAME: s3avdev.bucketName,
         PATH_TO_AV_DEFINITIONS: avConfig.avDefS3KeyPrefix,
         MAX_FILE_SIZE: (2 ** 31).toString()
-      }
+      },
+      vpc: vpc,
+      filesystem: lambda.FileSystem.fromEfsAccessPoint(efsAp, avConfig.mountpoint),
     });
+
+    // grant the scan function read access to all S3 buckets
+    if (fnAvScn.role) {
+      fnAvScn.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3ReadOnlyAccess'));
+    };
     // #endregion
   }
 }
