@@ -107,7 +107,7 @@ export class S3AntivirusStack extends cdk.Stack {
     // add a trigger schedule
     const ebRuleDefDl = new event.Rule(this, 'definitionsDownloadRule', {
       description: 'triggers a Lambda function to download the Antivirus definition files',
-      schedule: event.Schedule.rate(cdk.Duration.hours(0.5)), // TODO - replace download intervall with 3h
+      schedule: event.Schedule.rate(cdk.Duration.hours(3)),
       targets: [
         new targets.LambdaFunction(fnDefDl)
       ]
@@ -123,12 +123,20 @@ export class S3AntivirusStack extends cdk.Stack {
       timeout: cdk.Duration.minutes(5),
       environment: {
         CLAMAV_BUCKET_NAME: s3avdev.bucketName,
-        PATH_TO_AV_DEFINITIONS: avConfig.avDefS3KeyPrefix,
+        FRESHCLAM_WORK_DIR: avConfig.mountpoint,
         MAX_FILE_SIZE: (2 ** 31).toString()
       },
       vpc: vpc,
-      filesystem: lambda.FileSystem.fromEfsAccessPoint(efsAp, avConfig.mountpoint),
+      filesystem: lambda.FileSystem.fromEfsAccessPoint(efsAp, avConfig.mountpoint)
     });
+
+    fnAvScn.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      resources: ['*'],
+      actions: [
+        's3:*Tagging'
+      ]
+    }));
 
     // grant the scan function read access to all S3 buckets
     if (fnAvScn.role) {
