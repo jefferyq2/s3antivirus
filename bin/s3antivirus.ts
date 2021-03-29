@@ -47,15 +47,7 @@ function Main () {
   Tags.of(app).add('App', buildConfig.App);
   Tags.of(app).add('Environment', buildConfig.Environment);
 
-/*   const s3AntivirusStackName = buildConfig.App + '-' + buildConfig.Environment + '-main';
-  const mainStack = new S3AntivirusStack(app, s3AntivirusStackName, {
-    env: {
-      region: buildConfig.AWSRegions,
-      account: buildConfig.AWSAccountID
-    }
-  }); */
-
-  buildConfig.AWSRegions.forEach((region, i) => {
+  buildConfig.AWSRegions.forEach((region) => {
     const stackName = buildConfig.App + '-' + buildConfig.Environment + '-' + region;
     const stack = new S3AntivirusStack(app, stackName, {
       env: {

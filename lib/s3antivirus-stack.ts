@@ -130,6 +130,7 @@ export class S3AntivirusStack extends cdk.Stack {
       filesystem: lambda.FileSystem.fromEfsAccessPoint(efsAp, avConfig.mountpoint)
     });
 
+    // grant permission to tag files on S3
     fnAvScn.addToRolePolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       resources: ['*'],
@@ -142,6 +143,13 @@ export class S3AntivirusStack extends cdk.Stack {
     if (fnAvScn.role) {
       fnAvScn.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3ReadOnlyAccess'));
     };
+
+    // export the Lambda function name in CloudFormation to make it available to other stacks
+    const outfnAvScn = new cdk.CfnOutput(this, 'outfnAvScn', {
+      value: fnAvScn.functionName,
+      description: 'Lambda function to call to scan a file'
+    });
+
     // #endregion
   }
 }
