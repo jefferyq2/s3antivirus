@@ -8,3 +8,4 @@ cdk.out
 #Custom
 config/*
 !config/*demo.yaml
+cdk.context.json

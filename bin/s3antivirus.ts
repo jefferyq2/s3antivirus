@@ -14,6 +14,10 @@ function ensureString (object: { [name: string]: any }, propName: string): strin
   if (!object[propName] || object[propName].trim().length === 0) { throw new Error(propName + ' does not exist or is empty'); }
   return object[propName];
 }
+function ensureArray (object: { [name: string]: any }, propName: string): string[] {
+  if (!object[propName] || object[propName].length === 0) { throw new Error(propName + ' does not exist or is empty'); }
+  return object[propName];
+}
 
 function getConfig () {
   const env = app.node.tryGetContext('config');
@@ -26,7 +30,7 @@ function getConfig () {
   const buildConfig: BuildConfig = {
     AWSAccountID: ensureString(unparsedEnv, 'AWSAccountID'),
     AWSProfileName: ensureString(unparsedEnv, 'AWSProfileName'),
-    AWSProfileRegion: ensureString(unparsedEnv, 'AWSProfileRegion'),
+    AWSRegions: ensureArray(unparsedEnv, 'AWSRegions'),
 
     App: ensureString(unparsedEnv, 'App'),
     Version: ensureString(unparsedEnv, 'Version'),
@@ -43,12 +47,22 @@ function Main () {
   Tags.of(app).add('App', buildConfig.App);
   Tags.of(app).add('Environment', buildConfig.Environment);
 
-  const s3AntivirusStackName = buildConfig.App + '-' + buildConfig.Environment + '-main';
+/*   const s3AntivirusStackName = buildConfig.App + '-' + buildConfig.Environment + '-main';
   const mainStack = new S3AntivirusStack(app, s3AntivirusStackName, {
     env: {
-      region: buildConfig.AWSProfileRegion,
+      region: buildConfig.AWSRegions,
       account: buildConfig.AWSAccountID
     }
+  }); */
+
+  buildConfig.AWSRegions.forEach((region, i) => {
+    const stackName = buildConfig.App + '-' + buildConfig.Environment + '-' + region;
+    const stack = new S3AntivirusStack(app, stackName, {
+      env: {
+        region: region,
+        account: buildConfig.AWSAccountID
+      }
+    });
   });
 }
 Main();

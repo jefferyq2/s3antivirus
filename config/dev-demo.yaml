@@ -1,6 +1,6 @@
 AWSAccountID: "123456789"
 AWSProfileName: "devProfile"
-AWSRegions: "eu-central-1"
+AWSRegions: ["eu-central-1", "us-east-1"]
 
 App: "s3antivirus"
 Environment: "dev-demo"
