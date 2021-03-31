@@ -144,6 +144,13 @@ export class S3AntivirusStack extends cdk.Stack {
       fnAvScn.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3ReadOnlyAccess'));
     };
 
+    // grant EventBridge to invoke scan function
+    const fnAvScnInvoke = new lambda.CfnPermission(this, 'AntivirusScanInvokePermission', {
+      action: 'lambda:InvokeFunction',
+      functionName: fnAvScn.functionName,
+      principal: 'events.amazonaws.com'
+    });
+
     // export the Lambda function name in CloudFormation to make it available to other stacks
     const outfnAvScn = new cdk.CfnOutput(this, 'outfnAvScnArn', {
       exportName: this.stackName + '-AvScanFunction',
