@@ -145,8 +145,9 @@ export class S3AntivirusStack extends cdk.Stack {
     };
 
     // export the Lambda function name in CloudFormation to make it available to other stacks
-    const outfnAvScn = new cdk.CfnOutput(this, 'outfnAvScn', {
-      value: fnAvScn.functionName,
+    const outfnAvScn = new cdk.CfnOutput(this, 'outfnAvScnArn', {
+      exportName: this.stackName + '-AvScanFunction',
+      value: fnAvScn.functionArn,
       description: 'Lambda function to call to scan a file'
     });
 
