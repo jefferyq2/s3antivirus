@@ -31,6 +31,7 @@ function getConfig () {
     AWSAccountID: ensureString(unparsedEnv, 'AWSAccountID'),
     AWSProfileName: ensureString(unparsedEnv, 'AWSProfileName'),
     AWSRegions: ensureArray(unparsedEnv, 'AWSRegions'),
+    VpcCidr: ensureString(unparsedEnv, 'VpcCidr'),
 
     App: ensureString(unparsedEnv, 'App'),
     Version: ensureString(unparsedEnv, 'Version'),
@@ -49,11 +50,13 @@ function Main () {
 
   buildConfig.AWSRegions.forEach((region) => {
     const stackName = buildConfig.App + '-' + buildConfig.Environment + '-' + region;
+    // eslint-disable-next-line no-unused-vars
     const stack = new S3AntivirusStack(app, stackName, {
       env: {
         region: region,
         account: buildConfig.AWSAccountID
-      }
+      },
+      vpcCidr: buildConfig.VpcCidr
     });
   });
 }

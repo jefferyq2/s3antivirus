@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as cdk from '@aws-cdk/core';
 import * as iam from '@aws-cdk/aws-iam';
 import * as ec2 from '@aws-cdk/aws-ec2';
@@ -10,8 +11,18 @@ import * as targets from '@aws-cdk/aws-events-targets';
 import * as path from 'path';
 import { avConfig } from './av-config';
 
+interface S3AntivirusStackProps extends cdk.StackProps {
+
+  /**
+   * Cidr notation for the VPC
+   *
+   * @default - ec2.Vpc.DEFAULT_CIDR_RANGE
+   * @example - '192.168.0.0/24'
+   */
+  vpcCidr?: string
+}
 export class S3AntivirusStack extends cdk.Stack {
-  constructor (scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor (scope: cdk.Construct, id: string, props: S3AntivirusStackProps) {
     super(scope, id, props);
 
     // S3 bucket for AV definitions
@@ -20,9 +31,8 @@ export class S3AntivirusStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-    // #region - Network resources
     const vpc = new ec2.Vpc(this, 'AvVPC', {
-      cidr: '192.168.0.0/24',
+      cidr: props.vpcCidr ? props.vpcCidr : ec2.Vpc.DEFAULT_CIDR_RANGE,
       subnetConfiguration: [
         {
           cidrMask: 27,
