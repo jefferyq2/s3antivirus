@@ -2,6 +2,29 @@
 
 This repository contains an Anti-Virus solution for S3. Build with Lambda and EFS, deployed by CDK
 
+## Configuration
+
+The configuration of specific environments (dev/prd) are located in the directory `/config`. Each environment has its own configuration file.
+
+## Deployment
+
+Since the the configuration the environments is outsourced in separated files, it is necessary to provide the config with each `cdk` command. And if you not wish to deploy with the default profile of the `aws cli` you have to provide the profile too. See examples below.
+
+- List all stacks of an environment
+
+  ```
+  cdk list -c config=prd --profile filetransfer
+  ```
+
+- Bootstrap an account / region (This is required only once per account and region). Even though the config parameter has no impact in this command, it is currently required.
+  ```
+  cdk bootstrap aws://914898555282/ap-northeast-2 -c config=dev --profile filetransfer
+  ```
+- **Deploy** (a specific stack | all stacks)
+  ```
+  cdk deploy <stackname|--all> -c config=prd --profile filetransfer
+  ```
+
 # CDK Information
 
 ## Environments
