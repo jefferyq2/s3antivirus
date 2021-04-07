@@ -24,6 +24,7 @@ Since the the configuration the environments is outsourced in separated files, i
   ```
   cdk deploy <stackname|--all> -c config=prd --profile filetransfer
   ```
+  If you are deploying multiple stacks it can be annoying to confirm changes on IAM for every stack. If you want to automatically confirm, you can append `--require-approval never`. (Check the [docs](https://docs.aws.amazon.com/cdk/latest/guide/cli.html#cli-security))
 
 # CDK Information
 
