@@ -13,7 +13,7 @@ Since the the configuration the environments is outsourced in separated files, i
 - List all stacks of an environment
 
   ```
-  cdk list -c config=prd --profile filetransfer
+  cdk list -c config=prd --profile <profilename>
   ```
 
 - Bootstrap an account / region (This is required only once per account and region). Even though the config parameter has no impact in this command, it is currently required.
@@ -22,7 +22,7 @@ Since the the configuration the environments is outsourced in separated files, i
   ```
 - **Deploy** (a specific stack | all stacks)
   ```
-  cdk deploy <stackname|--all> -c config=prd --profile filetransfer
+  cdk deploy <stackname|--all> -c config=prd --profile <profilename>
   ```
   If you are deploying multiple stacks it can be annoying to confirm changes on IAM for every stack. If you want to automatically confirm, you can append `--require-approval never`. (Check the [docs](https://docs.aws.amazon.com/cdk/latest/guide/cli.html#cli-security))
 
