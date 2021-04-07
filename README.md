@@ -18,7 +18,7 @@ Since the the configuration the environments is outsourced in separated files, i
 
 - Bootstrap an account / region (This is required only once per account and region). Even though the config parameter has no impact in this command, it is currently required.
   ```
-  cdk bootstrap aws://914898555282/ap-northeast-2 -c config=dev --profile filetransfer
+  cdk bootstrap aws://914898555282/ap-northeast-2 -c config=dev --profile <profilename>
   ```
 - **Deploy** (a specific stack | all stacks)
   ```
