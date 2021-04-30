@@ -1,6 +1,12 @@
 # S3 Anti-Virus
 
-This repository contains an Anti-Virus solution for S3. Build with Lambda and EFS, deployed by CDK
+This repository contains an Antivirus solution for S3, build with Lambda, S3, EventBridge and EFS, deployed by CDK.\
+Since Lambda functions have a limit of 512 MB of internal storage, it is necessary to attach an EFS to the Lambda function and increase the available storage if you want to scan files larger than a few megabytes. And if you want to attach an EFS to a Lambda function it is necessary to use a VPC. With this solution, there is almost no limit in filesize.
+
+![Diagram](https://github.com/cloudxsgmbh/s3antivirus/raw/main/img/diagram.png)
+
+Note: The trigger of the scan function is not included in this repository. Because this varies depending on the application. In the diagram above it is an EventBridge rule catching _s3 CompleteMultipartUpload_ events.\
+Once the scan function is triggered, it downloads the file from the S3 bucket to the EFS, scans it and puts a appropriate Tag on the file.
 
 ## Configuration
 
