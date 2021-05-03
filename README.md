@@ -6,7 +6,8 @@ Since Lambda functions have a limit of 512 MB of internal storage, it is necessa
 ![Diagram](https://github.com/cloudxsgmbh/s3antivirus/raw/main/img/diagram.png)
 
 Note: The trigger of the scan function is not included in this repository. Because this varies depending on the application. In the diagram above it is an EventBridge rule catching _s3 CompleteMultipartUpload_ events.\
-Once the scan function is triggered, it downloads the file from the S3 bucket to the EFS, scans it and puts a appropriate Tag on the file.
+Once the scan function is triggered, it downloads the file from the S3 bucket to the EFS, scans it and puts a appropriate Tag on the file.\
+Files can be prevent from being scanned by putting the Tag `virusScanSkip=yes` on them.
 
 ## Configuration
 
