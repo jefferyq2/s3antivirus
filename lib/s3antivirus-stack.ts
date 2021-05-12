@@ -125,11 +125,17 @@ export class S3AntivirusStack extends cdk.Stack {
     // #endregion
 
     // #region - Antivirus scanner
+    let scanLambdaMemory = 4096; // TODO - Loadtesting
+    if (props.env && props.env.region && props.env.region.startsWith('us-gov-')) {
+      // GovCloud allows only a maximum memory of 3008MB
+      scanLambdaMemory = 3008;
+    }
+
     const fnAvScn = new lambda.Function(this, 'AntivirusScan', {
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'antivirus.lambdaHandleEvent',
       code: lambda.Code.fromAsset(path.join(__dirname, 'lambda', 'clamav')),
-      memorySize: 4096, // TODO - Loadtesting
+      memorySize: scanLambdaMemory,
       timeout: cdk.Duration.minutes(5),
       environment: {
         CLAMAV_BUCKET_NAME: s3avdev.bucketName,
