@@ -1,7 +1,7 @@
 # S3 Anti-Virus
 
 This repository contains an Antivirus solution for S3, build with Lambda, S3, EventBridge and EFS, deployed by CDK.\
-Since Lambda functions have a limit of 512 MB of internal storage, it is necessary to attach an EFS to the Lambda function and increase the available storage if you want to scan files larger than a few megabytes. And if you want to attach an EFS to a Lambda function it is necessary to use a VPC. With this solution, there is almost no limit in filesize.
+Since Lambda functions have a limit of 512 MB of internal storage, it is necessary to attach an EFS to the Lambda function and increase the available storage if you want to scan files larger than a few megabytes. And if you want to attach an EFS to a Lambda function it is necessary to use a VPC. With this solution, there is almost no limit in filesize. Although, as on the GovCloud there is a limit of 3GB RAM for a Lambda, currently the filesize limit is set to [2GB](https://github.com/cloudxsgmbh/s3antivirus/blob/d17a04ee3b0b87b85c790695e91d1dd2deb17947/lib/av-config.ts#L5). Larger files will be skipped.
 
 ![Diagram](https://github.com/cloudxsgmbh/s3antivirus/raw/main/img/diagram.png)
 
