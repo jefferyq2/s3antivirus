@@ -139,8 +139,8 @@ export class S3AntivirusStack extends cdk.Stack {
       timeout: cdk.Duration.minutes(5),
       environment: {
         CLAMAV_BUCKET_NAME: s3avdev.bucketName,
-        FRESHCLAM_WORK_DIR: avConfig.mountpoint
-        // MAX_FILE_SIZE: avConfig.maxFileSize.toString()
+        FRESHCLAM_WORK_DIR: avConfig.mountpoint,
+        MAX_FILE_SIZE: avConfig.maxFileSize.toString()
       },
       vpc: vpc,
       filesystem: lambda.FileSystem.fromEfsAccessPoint(efsAp, avConfig.mountpoint)
